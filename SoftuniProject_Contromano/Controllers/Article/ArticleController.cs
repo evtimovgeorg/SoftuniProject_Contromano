@@ -1,20 +1,31 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SoftuniProject_Contromano.Infrastucture.Data.Common;
 
 namespace SoftuniProject_Contromano.Controllers.Article
 {
     public class ArticleController : Controller
     {
+        
+
+
+
         // GET: ArticleController
         public ActionResult Index()
         {
-            return View();
+            var articles = repository.All();
+            return View(articles);
         }
 
         // GET: ArticleController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var article = repository.GetArticleById(id);
+            if (article == null)
+            {
+                return NotFound();
+            }
+            return View(article);
         }
 
         // GET: ArticleController/Create
@@ -26,58 +37,63 @@ namespace SoftuniProject_Contromano.Controllers.Article
         // POST: ArticleController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(Article article)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                return View(article);
             }
-            catch
-            {
-                return View();
-            }
+            await repository.Save(article);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: ArticleController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var article = repository.GetArticleById(id);
+            if (article == null)
+            {
+                return NotFound();
+            }
+            return View(article);
         }
 
         // POST: ArticleController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, Article article)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                return View(article);
             }
-            catch
-            {
-                return View();
-            }
+            await repository.Edit(article);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: ArticleController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var article = repository.GetArticleById(id);
+            if (article == null)
+            {
+                return NotFound();
+            }
+            return View(article);
         }
 
         // POST: ArticleController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, IFormCollection collection)
         {
-            try
+            var article = repository.GetArticleById(id);
+            if (article == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
-            {
-                return View();
-            }
+            await repository.Delete(article);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
