@@ -39,7 +39,10 @@ namespace SoftuniProject_Contromano.Infrastucture.Data.Common
             
             await context.SaveChangesAsync();
         }
-
+        private async Task Save()
+        {
+            await context.SaveChangesAsync();
+        }
         public async Task EditAsync<TEntity>(TEntity entity) where TEntity : class
         {
            
@@ -55,7 +58,7 @@ namespace SoftuniProject_Contromano.Infrastucture.Data.Common
             {
                 DbSet<TEntity>().Remove(entity);
             }
-            await context.SaveChangesAsync();
+            await Save();
         }
 
         public async Task DeleteAsync<TEntity>(int id) where TEntity : class
@@ -74,12 +77,29 @@ namespace SoftuniProject_Contromano.Infrastucture.Data.Common
             {
                 DbSet<TEntity>().Remove(entity);
             }
-            await context.SaveChangesAsync();
+            await Save();
 
         }
         private async Task<TEntity> GetByIdAsync<TEntity>(int id) where TEntity : class
         {
             return await DbSet<TEntity>().FindAsync(id);
         }
+
+        public async Task<bool> CreateAsync<TEntity>(TEntity entity) where TEntity : class
+        {
+            try
+            {
+                await DbSet<TEntity>().AddAsync(entity);
+                await Save();
+                return true;
+            }
+            catch 
+            {
+
+                return false;
+            }
+        }
+
+        
     }
 }

@@ -18,5 +18,7 @@ namespace SoftuniProject_Contromano.Infrastucture.Data.Common
         Task DeleteAsync<TEntity>(int id) where TEntity : class;
 
         Task EditAsync<TEntity>(TEntity entity) where TEntity : class;
+
+        Task<bool> CreateAsync<TEntity>(TEntity entity) where TEntity : class;
     }
 }
